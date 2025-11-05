@@ -1,0 +1,1 @@
+const PROPLAYER_POINTS = 1000;
