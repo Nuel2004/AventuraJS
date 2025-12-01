@@ -1,27 +1,52 @@
-//Modificar el poder del jugador y del enemigo en caso de que el ataque sea mayor que la defensa.
-        // El poder se calcula restando a la defensa el ataque del contrincante (Ej: player.attack = 7;
-        // enemy.defense = 10;
-        // playerPower = 10 - 7 = 3;
-        // enemy.hp = enemy.hp - 3;)
+/**
+ * @fileoverview Sistema de batalla del juego
+ * @module battle
+ */
 
-export function battle (player, enemy){
-    let playerPower = enemy.defense - player.attack;
-    let enemyPower = player.defense - enemy.attack;
+/**
+ * Ejecuta una batalla por turnos entre el jugador y un enemigo
+ * @param {Object} player - Objeto jugador con propiedades hp, getAttackTotal, getDefenseTotal y points
+ * @param {Object} enemy - Objeto enemigo con propiedades hp, attack, type y multiplierDamage (opcional)
+ * @returns {{winner: Object|null, points: number}} Objeto con el ganador y los puntos obtenidos
+ * @example
+ * const result = battle(player, enemy);
+ * console.log(result.winner.name); // "Héroe"
+ * console.log(result.points); // 150
+ */
+export function battle(player, enemy) {
 
-    while(player.hp > 0 && enemy.hp > 0){
-        //Ataca primero el jugador
-        enemy.hp -= playerPower;
-        //Despues ataca el enemigo
-        player.hp -= enemyPower;
+    // Combate por turnos hasta que uno llegue a 0 HP
+    while (player.hp > 0 && enemy.hp > 0) {
+
+        // Turno del jugador: reduce vida del enemigo
+        enemy.hp -= player.getAttackTotal();
+
+        // Turno del enemigo: reduce vida del jugador (si sigue vivo)
+        if (enemy.hp > 0) {
+            player.hp = (player.hp + player.getDefenseTotal()) - enemy.attack;
+        }
     }
+
+    let winner = null;
+    let points = 0;
+
+    // Determinar ganador y calcular puntos
     if (player.hp > 0 && enemy.hp <= 0) {
-        player.points += enemyPower
-        console.log(`🏆 ${player.name} ha ganado a ${enemy.name} y ha ganado ${enemyPower} puntos 🏆`);
-    } else if (player.hp <= 0 && enemy.hp > 0){
-        console.log(`💀 ${enemy.name} ha ganado a ${player.name} y le ha robado ${Math.floor(player.points)} puntos 💀`);
+        winner = player;
+        points = 100 + enemy.attack;
+
+        // Bonus si el enemigo es un jefe
+        if (enemy.type === "Jefe") {
+            points = Math.round(points * enemy.multiplierDamage);
+        }
+
+        player.points += points;
+    } 
+    else if (enemy.hp > 0) {
+        winner = enemy;
+        points = 0;
         player.points = 0;
     }
-    else{
-        console.log(`${player.name} y ${enemy.name} han muerto en batalla. 💀 (Empate) `);
-    }
+
+    return { winner, points };
 }

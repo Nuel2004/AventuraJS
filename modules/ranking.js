@@ -1,21 +1,28 @@
-export function categogorizePlayers(players, proPoints) {
-    let proPlayers = "";
-    let rookies = ""
-    for (let i = 0; i < players.length; i++) {
-        if (players[i].points >= proPoints) {
-            proPlayers += players[i].name + "\n";;
-        } else {
-            rookies += players[i].name + "\n";
-        }
-    }
-    return "\u{1F44D} ProPlayers:\n\n" + proPlayers + "\n\n\u{1F44E} Rookies:\n\n" + rookies + "\n\n";
+/**
+ * @fileoverview Sistema de ranking y categorización de jugadores
+ * @module ranking
+ */
+
+/**
+ * Categoriza al jugador según su puntuación
+ * @param {Object} player - Objeto jugador con propiedad points
+ * @param {number} [threshold=1000] - Umbral de puntos para ser Veterano
+ * @returns {string} "Veterano" si supera el umbral, "Novato" en caso contrario
+ * @example
+ * const categoria = categorizePlayer(player, 1000);
+ * console.log(categoria); // "Veterano" o "Novato"
+ */
+export function categorizePlayer(player, threshold = 1000) {
+    return player.points >= threshold ? "Veterano" : "Novato";
 }
 
+/**
+ * Ordena un array de jugadores por puntuación de mayor a menor
+ * @param {Array<Object>} players - Array de jugadores con propiedad points
+ * @returns {Array<Object>} Nuevo array ordenado por puntuación descendente
+ * @example
+ * const ranking = rankPlayers([player1, player2, player3]);
+ */
 export function rankPlayers(players) {
-    players.sort((a,b) => b.points - a.points);
-    let rankedPlayers = "\u{1F451} Ranked players:\n\n";
-    for(let i = 0; i < players.length; i ++){
-        rankedPlayers += i+1 + " - " + players[i].name + "\n";
-    }
-    return rankedPlayers;
+    return [...players].sort((a, b) => b.points - a.points);
 }
