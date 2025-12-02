@@ -6,14 +6,14 @@
 /**
  * Categoriza al jugador según su puntuación
  * @param {Object} player - Objeto jugador con propiedad points
- * @param {number} [threshold=1000] - Umbral de puntos para ser Veterano
- * @returns {string} "Veterano" si supera el umbral, "Novato" en caso contrario
+ * @param {number} [limit=500] - Umbral de puntos para ser Netherite
+ * @returns {string} "Netherite" si supera el umbral, "Madera" en caso contrario
  * @example
- * const categoria = categorizePlayer(player, 1000);
- * console.log(categoria); // "Veterano" o "Novato"
+ * const categoria = categorizePlayer(player, 500);
+ * console.log(categoria); // "Netherite" o "Madera"
  */
-export function categorizePlayer(player, threshold = 1000) {
-    return player.points >= threshold ? "Veterano" : "Novato";
+export function categorizePlayer(player, limit=500) {
+    return player.points >= limit ? "Netherite" : "Madera";
 }
 
 /**
