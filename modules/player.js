@@ -1,54 +1,50 @@
-function deepClone(obj) {
-    return JSON.parse(JSON.stringify(obj));
-}
-
 export class Player {
-
     constructor(name, avatar) {
         this.name = name;
-        this.avatar = "images/caballero.png";
-        this.points = 0;
-        this.hpMax = 200;
-        this.hp = this.hpMax;
+        this.avatar = avatar || "https://placehold.co/100?text=Hero";
+        this.points = 0; // Puntos iniciales a 0 según PDF [cite: 53]
+        this.baseHp = 100;
         this.inventory = [];
     }
 
+    /**
+     * Añade un objeto clonado al inventario [cite: 57]
+     */
     addItem(item) {
-        this.inventory.push(deepClone(item));
+        // Clonamos usando JSON (deep clone simple)
+        const clonedItem = JSON.parse(JSON.stringify(item));
+        this.inventory.push(clonedItem);
     }
 
-    buyItem(name, market) {
-        const item = market.find(p => p.name === name);
-        if (!item) return false;
-
-        this.addItem(item);
-        return true;
-    }
-
-    getAttackTotal() {
+    /**
+     * Calcula ataque total basado en objetos tipo 'Arma' [cite: 90]
+     */
+    get totalAttack() {
         return this.inventory
-            .filter(i => i.type === "Arma")
-            .reduce((sum, item) => sum + item.bonus, 0);
+            .filter(i => i.type === 'Arma')
+            .reduce((sum, i) => sum + i.bonus, 0);
     }
 
-    getDefenseTotal() {
+    /**
+     * Calcula defensa total basado en objetos tipo 'Armadura' [cite: 91]
+     */
+    get totalDefense() {
         return this.inventory
-            .filter(i => i.type === "Armadura")
-            .reduce((sum, item) => sum + item.bonus, 0);
+            .filter(i => i.type === 'Armadura')
+            .reduce((sum, i) => sum + i.bonus, 0);
     }
 
-    getLifeTotal() {
-        return this.inventory
-            .filter(i => i.type === "Consumible")
-            .reduce((sum, item) => sum + item.bonus, 0);
+    /**
+     * Calcula vida total. Base + bonos de 'Consumible' (interpretado como max HP pasiva o cura) [cite: 92]
+     */
+    get totalHp() {
+        const bonusHp = this.inventory
+            .filter(i => i.type === 'Consumible')
+            .reduce((sum, i) => sum + i.bonus, 0);
+        return this.baseHp + bonusHp;
     }
 
-    useConsumable(name) {
-        const item = this.inventory.find(i => i.name === name && i.type === "Consumible");
-        if (!item) return false;
-
-        this.hp = Math.min(this.hp + item.bonus, this.hpMax);
-        this.inventory = this.inventory.filter(i => i !== item);
-        return true;
+    addPoints(points) {
+        this.points += points;
     }
 }

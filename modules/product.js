@@ -1,33 +1,36 @@
+/**
+ * Representa un producto dentro del sistema.
+ */
 export class Product {
-
-    constructor(name, price, rarity, type, bonus, img) {
-
-        // Validación de tipo del enunciado
-        const validTypes = ["Arma", "Armadura", "Consumible"];
-        if (!validTypes.includes(type)) {
-            throw new Error(`Tipo inválido: ${type}. Tipos válidos: ${validTypes.join(", ")}`);
-        }
-
+    /**
+     * @param {string} name 
+     * @param {number} price (en céntimos)
+     * @param {string} rarity 
+     * @param {string} type 
+     * @param {number} bonus 
+     * @param {string} image 
+     */
+    constructor(name, price, rarity, type, bonus, image) {
         this.name = name;
         this.price = price;
         this.rarity = rarity;
         this.type = type;
-        this.bonus = Number(bonus);
-        this.img = img;
-
+        this.bonus = bonus; // Valor numérico [cite: 88]
+        this.image = image || "https://placehold.co/100"; // Imagen por defecto
     }
 
-    formatPrice() {
-        return (this.price / 100).toFixed(2).replace(".", ",") + "€";
-    }
-
-    info() {
-        return `Nombre: ${this.name} | Precio: ${this.formatPrice()} | Rareza: ${this.rarity} | Tipo: ${this.type} | Bonus: ${this.bonus}`;
+    /**
+     * Devuelve el precio formateado 
+     * @returns {string}
+     */
+    getFormattedPrice() {
+        return (this.price / 100).toFixed(2).replace('.', ',') + '€';
     }
 
     applyDiscount(percent) {
-        percent = Math.min(Math.max(percent, 0), 100);
-        const newPrice = Math.round(this.price * (1 - percent / 100));
-        return new Product(this.name, newPrice, this.rarity, this.type, this.bonus);
+        if (percent < 0) percent = 0;
+        if (percent > 100) percent = 100;
+        const newPrice = Math.round(this.price * (1 - (percent / 100)));
+        return new Product(this.name, newPrice, this.rarity, this.type, this.bonus, this.image);
     }
 }

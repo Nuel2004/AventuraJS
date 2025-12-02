@@ -1,0 +1,186 @@
+/* Estilos generales */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4e4bc; /* Color pergamino/arena */
+    color: #3e2723;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+}
+
+h1, h2, h3 {
+    color: #5d4037;
+}
+
+/* Contenedor principal */
+#game-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background-color: rgba(255, 255, 255, 0.6);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Gestión de Escenas */
+.scene {
+    transition: opacity 0.3s ease-in-out;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.active {
+    display: block;
+    animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Rejillas (Grid) para productos y enemigos */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* Tarjetas (Cards) */
+.card {
+    background: white;
+    border: 2px solid #8d6e63;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 3px 3px 6px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card img {
+    max-width: 100px;
+    height: 100px;
+    object-fit: contain;
+    margin-bottom: 10px;
+}
+
+.card.selected {
+    background-color: #dcedc8; /* Verde claro al seleccionar */
+    border-color: #33691e;
+    transform: scale(1.02);
+}
+
+/* Estilos de botones */
+button {
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    margin-top: 15px;
+    transition: background 0.2s;
+}
+
+.btn-primary {
+    background-color: #ffca28;
+    color: #3e2723;
+}
+.btn-primary:hover { background-color: #ffb300; }
+
+.btn-danger {
+    background-color: #d32f2f;
+    color: white;
+}
+.btn-danger:hover { background-color: #b71c1c; }
+
+.btn-secondary {
+    background-color: #8d6e63;
+    color: white;
+}
+
+/* Carrito de compra */
+.cart-summary {
+    background-color: #d7ccc8;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.cart-grid {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    min-height: 60px;
+}
+
+.cart-item-box {
+    width: 60px;
+    height: 60px;
+    background: #efebe9;
+    border: 1px solid #a1887f;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+/* Stats del jugador */
+.stats-box {
+    background-color: #efebe9;
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+    text-align: left;
+}
+
+.stats-box p {
+    margin: 5px 0;
+    border-bottom: 1px solid #d7ccc8;
+}
+
+/* Batalla */
+.battle-vs {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 20px;
+    background: #fff3e0;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.vs-text {
+    font-size: 2em;
+    font-weight: bold;
+    color: #d84315;
+}
+
+.battle-details ul {
+    list-style-type: none;
+    padding: 0;
+    text-align: left;
+    max-height: 200px;
+    overflow-y: auto;
+    background: white;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+.battle-result {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 8px;
+}
+.battle-result.win { background-color: #c8e6c9; color: #1b5e20; }
+.battle-result.loss { background-color: #ffcdd2; color: #b71c1c; }
+
+/* Ranking Final */
+.rank-title { font-size: 3em; margin: 10px 0; }
+.rank-title.veteran { color: #fbc02d; text-shadow: 2px 2px #3e2723; }
+.rank-title.rookie { color: #8d6e63; }

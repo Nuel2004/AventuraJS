@@ -1,31 +1,20 @@
+
 export class Enemigo {
-    name;
-    avatar;
-    attack;
-    hp;
-
-    constructor(name, avatar, attack, hp) {
+    constructor(name, levelAtaque, hp, image) {
         this.name = name;
-        this.avatar = avatar;
-        this.attack = attack;
+        this.levelAtaque = levelAtaque;
         this.hp = hp;
-        this.type = "Enemigo";
-    }
-
-    info() {
-        return `Tipo: ${this.type} | Nombre: ${this.name} | Ataque: ${this.attack} | Vida: ${this.hp}`;
+        this.maxHp = hp;
+        this.image = image || "https://placehold.co/100?text=Enemy";
     }
 }
 
 export class JefeFinal extends Enemigo {
-
-    constructor(name, avatar, attack, hp, multiplierDamage = 1.2) {
-        super(name, avatar, attack, hp);
-        this.type = "Jefe";
+    /**
+     * @param {number} multiplierDamage - Multiplicador de puntos [cite: 69]
+     */
+    constructor(name, levelAtaque, hp, image, multiplierDamage = 1.2) {
+        super(name, levelAtaque, hp, image);
         this.multiplierDamage = multiplierDamage;
-    }
-
-    info() {
-        return `Jefe: ${this.name} | Multiplicador: ${this.multiplierDamage}`;
     }
 }

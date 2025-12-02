@@ -1,52 +1,49 @@
 /**
- * @fileoverview Sistema de batalla del juego
- * @module battle
+ * Simula combate turno a turno
+ * @returns {Object} Resultado del combate { winner, log, pointsEarned }
  */
+export function simulateBattle(player, enemy) {
+    let log = [];
+    let playerCurrentHp = player.totalHp; // Usamos la vida calculada
+    let enemyCurrentHp = enemy.hp;
+    
+    log.push(`Inicio del combate: ${player.name} vs ${enemy.name}`);
 
-/**
- * Ejecuta una batalla por turnos entre el jugador y un enemigo
- * @param {Object} player - Objeto jugador con propiedades hp, getAttackTotal, getDefenseTotal y points
- * @param {Object} enemy - Objeto enemigo con propiedades hp, attack, type y multiplierDamage (opcional)
- * @returns {{winner: Object|null, points: number}} Objeto con el ganador y los puntos obtenidos
- * @example
- * const result = battle(player, enemy);
- * console.log(result.winner.name); // "Héroe"
- * console.log(result.points); // 150
- */
-export function battle(player, enemy) {
-
-    // Combate por turnos hasta que uno llegue a 0 HP
-    while (player.hp > 0 && enemy.hp > 0) {
-
-        // Turno del jugador: reduce vida del enemigo
-        enemy.hp -= player.getAttackTotal();
-
-        // Turno del enemigo: reduce vida del jugador (si sigue vivo)
-        if (enemy.hp > 0) {
-            player.hp = (player.hp + player.getDefenseTotal()) - enemy.attack;
-        }
+    // Bucle de turnos [cite: 110]
+    while (playerCurrentHp > 0 && enemyCurrentHp > 0) {
+        
+        // Turno Jugador
+        enemyCurrentHp -= player.totalAttack;
+        
+        // Turno Enemigo
+        // Fórmula del PDF: Vida = (VidaActual + Defensa) - AtaqueEnemigo [cite: 111]
+        // Interpretación lógica: Daño = AtaqueEnemigo - Defensa (min 0)
+        let damageToPlayer = Math.max(0, enemy.levelAtaque - player.totalDefense);
+        playerCurrentHp -= damageToPlayer;
     }
 
     let winner = null;
-    let points = 0;
+    let pointsEarned = 0;
 
-    // Determinar ganador y calcular puntos
-    if (player.hp > 0 && enemy.hp <= 0) {
-        winner = player;
-        points = 100 + enemy.attack;
-
-        // Bonus si el enemigo es un jefe
-        if (enemy.type === "Jefe") {
-            points = Math.round(points * enemy.multiplierDamage);
+    if (playerCurrentHp > 0) {
+        winner = "player";
+        // Cálculo de puntos [cite: 114-116]
+        let basePoints = 100;
+        let bonusPoints = enemy.levelAtaque;
+        
+        let total = basePoints + bonusPoints;
+        
+        // Si es jefe, multiplicar
+        if (enemy.multiplierDamage) {
+            total = total * enemy.multiplierDamage;
         }
-
-        player.points += points;
-    } 
-    else if (enemy.hp > 0) {
-        winner = enemy;
-        points = 0;
-        player.points = 0;
+        
+        pointsEarned = Math.floor(total);
+        log.push(`¡${player.name} ha ganado!`);
+    } else {
+        winner = "enemy";
+        log.push(`¡${player.name} ha sido derrotado!`);
     }
 
-    return { winner, points };
+    return { winner, log, pointsEarned };
 }

@@ -1,28 +1,59 @@
 <!DOCTYPE html>
 <html lang='es'>
-
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <link rel='stylesheet' href='style.css'>
     <script type="module" src='script.js' defer></script>
-    <title>AventuraJS</title>
+    <title>Aventura en el Reino JS</title>
 </head>
-
 <body>
-    <main>
-        <h1 id="tittle">AVENTURA EN EL REINO DE JS</h1>
-        <div class="scene active" id="init">
+    <div id="game-container">
+        
+        <section id="scene-1" class="scene active">
+            <h1>AventuraJS</h1>
+            <h2>Perfil del Cazador</h2>
+            <div id="player-profile-initial" class="card player-card"></div>
+            <button id="btn-to-market" class="btn-primary">Ir al Mercado</button>
+        </section>
+
+        <section id="scene-2" class="scene hidden">
+            <h2>Mercado Negro</h2>
+            <p>Selecciona objetos para comprar.</p>
+            <div id="market-grid" class="grid-container"></div>
             
+            <div class="cart-summary">
+                <h3>Tu Cesta</h3>
+                <div id="cart-items" class="cart-grid"></div>
+            </div>
+            <button id="btn-buy" class="btn-primary">Comprar y Continuar</button>
+        </section>
 
-        </div>
-        <div class="scene" id="market"></div>
-        <div class="scene" id="player-inventory"></div>
-        <div class="scene" id="enemies"></div>
-        <div class="scene" id="battles"></div>
-        <div class="scene" id="ranket"></div>
+        <section id="scene-3" class="scene hidden">
+            <h2>Estado tras Compras</h2>
+            <div id="player-profile-updated" class="card player-card"></div>
+            <button id="btn-to-enemies" class="btn-primary">Ver Enemigos</button>
+        </section>
 
-    </main>
+        <section id="scene-4" class="scene hidden">
+            <h2>Enemigos al Acecho</h2>
+            <div id="enemies-grid" class="grid-container"></div>
+            <p style="margin-top: 20px;">Prepárate, lucharás contra todos ellos en secuencia.</p>
+            <button id="btn-start-gauntlet" class="btn-danger">⚔️ ¡Comenzar Batallas! ⚔️</button>
+        </section>
+
+        <section id="scene-5" class="scene hidden">
+            <h2 id="battle-progress">Batalla</h2>
+            <div id="battle-log" class="battle-container"></div>
+            <button id="btn-battle-action" class="btn-primary">Siguiente</button>
+        </section>
+
+        <section id="scene-6" class="scene hidden">
+            <h2>Resultado Final</h2>
+            <div id="final-score" class="result-card"></div>
+            <button id="btn-restart" class="btn-secondary">Reiniciar Partida</button>
+        </section>
+
+    </div>
 </body>
-
 </html>

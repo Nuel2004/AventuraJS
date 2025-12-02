@@ -1,29 +1,22 @@
-import { Product } from "./product.js";
+import { Product } from './product.js';
 
 export const market = [
     new Product("Espada del Gladiador", 12500, "Épica", "Arma", 50, "images/espada.png"),
-    new Product("Escudo del Centinela", 9900, "Rara", "Armadura", 35, "images/botas.png"),
-    new Product("Armadura de Asalto", 15800, "Épica", "Armadura", 25),
-    new Product("Botas del Jinete", 7200, "Común", "Armadura", 10, "images/escudo.png"),
-    new Product("Anillo del Fénix", 13400, "Legendaria", "Consumible", 100),
-    new Product("Poción de Furia", 450, "Común", "Consumible", 20),
-    new Product("Casco del Conquistador", 11100, "Épica", "Armadura", 20),
-    new Product("Guantes de Precisión", 5600, "Infrecuente", "Armadura", 10),
-    new Product("Capa de Invisibilidad", 19900, "Legendaria", "Armadura", 100),
-    new Product("Espada de la Aurora", 16200, "Legendaria", "Arma", 55),
-    new Product("Arco del Halcón", 9500, "Rara", "Arma", 40),
-    new Product("Maza del Vengador", 13700, "Épica", "Arma", 48),
-    new Product("Tridente del Leviatán", 17500, "Legendaria", "Arma", 65)
+    new Product("Escudo del Centinela", 9900, "Rara", "Armadura", 35, "images/escudo.png"), // Cambiado tipo a Armadura para consistencia
+    new Product("Manzana", 4000, "Común", "Consumible", 10, "images/manzana.png"),
+    new Product("Armadura de Cuero", 18000, "Común", "Armadura", 6, "images/armadura.png"),
+    new Product("Hacha", 12000, "Común", "Arma", 8, "images/hacha.png"),
+    new Product("Poción Mayor", 5000, "Rara", "Consumible", 50, "images/pocion.png"),
 ];
 
-export function filterMarket(rarity, market) {
-    return market.filter(p => p.rarity === rarity);
-}
+export function applyRandomDiscount(marketList) {
+    const rarities = ["Común", "Rara", "Épica", "Legendaria"];
+    const randomRarity = rarities[Math.floor(Math.random() * rarities.length)];
+    const discount = Math.floor(Math.random() * 30) + 10; // Entre 10% y 40%
 
-export function search(market, name) {
-    return market.find(p => p.name === name);
-}
-
-export function applyDiscount(market, rarity, percent) {
-    return market.map(p => p.rarity === rarity ? p.applyDiscount(percent) : p);
+    console.log(`Aplicando descuento del ${discount}% a rareza: ${randomRarity}`); // Solo para depuración interna
+    
+    return marketList.map(p => 
+        p.rarity === randomRarity ? p.applyDiscount(discount) : p
+    );
 }
