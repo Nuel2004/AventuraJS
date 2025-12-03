@@ -1,7 +1,7 @@
 export class Player {
     constructor(name, avatar) {
         this.name = name;
-        this.avatar = avatar || "https://placehold.co/100?text=Hero";
+        this.avatar = avatar;
         this.points = 0; // Puntos iniciales a 0 según PDF [cite: 53]
         this.baseHp = 100;
         this.inventory = [];
@@ -43,7 +43,10 @@ export class Player {
             .reduce((sum, i) => sum + i.bonus, 0);
         return this.baseHp + bonusHp;
     }
-
+    /**
+     * Añade la puntuación obtenida al jugador
+     * @param {number} points - Puntos a añadir
+     */
     addPoints(points) {
         this.points += points;
     }

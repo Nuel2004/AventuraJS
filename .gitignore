@@ -1,0 +1,12 @@
+# Directorio de dependencias de Node
+node_modules/
+
+# Directorio de documentación generada por JSDoc
+docs/
+
+# Archivo de log de NPM (opcional, pero recomendado)
+npm-debug.log
+
+# Archivo de configuración de IDEs (si usas VS Code, etc.)
+.vscode/
+.DS_Store

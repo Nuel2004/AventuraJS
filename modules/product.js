@@ -15,8 +15,8 @@ export class Product {
         this.price = price;
         this.rarity = rarity;
         this.type = type;
-        this.bonus = bonus; // Valor numérico [cite: 88]
-        this.image = image || "https://placehold.co/100"; // Imagen por defecto
+        this.bonus = bonus;
+        this.image = image;
     }
 
     /**
@@ -26,7 +26,11 @@ export class Product {
     getFormattedPrice() {
         return (this.price / 100).toFixed(2).replace('.', ',') + '€';
     }
-
+    /**
+     * Aplica un descuento al precio del producto
+     * @param {number} percent - Porcentaje de descuento (0-100)
+     * @returns {Product} Nuevo producto con el precio descontado
+     */
     applyDiscount(percent) {
         if (percent < 0) percent = 0;
         if (percent > 100) percent = 100;

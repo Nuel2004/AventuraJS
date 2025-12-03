@@ -5,13 +5,13 @@ export class Enemigo {
         this.levelAtaque = levelAtaque;
         this.hp = hp;
         this.maxHp = hp;
-        this.image = image || "https://placehold.co/100?text=Enemy";
+        this.image = image;
     }
 }
 
 export class JefeFinal extends Enemigo {
     /**
-     * @param {number} multiplierDamage - Multiplicador de puntos [cite: 69]
+     * @param {number} multiplierDamage - Multiplicador de puntos 
      */
     constructor(name, levelAtaque, hp, image, multiplierDamage = 1.2) {
         super(name, levelAtaque, hp, image);
