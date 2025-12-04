@@ -5,6 +5,7 @@ export class Player {
         this.points = 0; // Puntos iniciales a 0 según PDF [cite: 53]
         this.baseHp = 100;
         this.inventory = [];
+        this.dinero = 500;
     }
 
     /**
@@ -49,5 +50,16 @@ export class Player {
      */
     addPoints(points) {
         this.points += points;
+    }
+    spendMoney(amount) {
+        if (this.dinero >= amount) {
+            this.dinero -= amount;
+            return true;
+        } else {
+            return false;
+        }
+    }
+    addMoney(dinero) {
+        this.dinero += dinero;
     }
 }

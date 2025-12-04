@@ -22,10 +22,9 @@ export function simulateBattle(player, enemy) {
         winner = "player";
         let basePoints = 100;
         let bonusPoints = enemy.levelAtaque;
-        
         let total = basePoints + bonusPoints;
         if (enemy.multiplierDamage) {
-            total = total * enemy.multiplierDamage;
+            total = total * enemy.multiplierDamage; 
         }
         
         pointsEarned = Math.floor(total);

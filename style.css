@@ -209,5 +209,5 @@ button:hover {
 
 /* Resultado Final */
 .rank-title { font-size: 3rem; margin: var(--spacing-md) 0; }
-.veteran { color: #f57f17; text-shadow: 2px 2px 0px #3e2723; }
-.rookie { color: #8d6e63; }
+.netherite { color: #f57f17; text-shadow: 2px 2px 0px #3e2723; }
+.madera { color: #8d6e63; }

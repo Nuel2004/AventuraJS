@@ -35,7 +35,7 @@ const state = {
         new Enemigo('Bandido', 12, 60, 'images/bandido.png'),
         new JefeFinal('Dragón', 28, 200, 'images/dragon.png', 2.0)
     ],
-    currentEnemyIndex: 0
+    currentEnemyIndex: 0,
 };
 
 /* ==========================================================================
@@ -43,7 +43,7 @@ const state = {
    ========================================================================== */
 /**
  * Muestra una escena específica mientras oculta todas las demás, basándose en el ID.
- * [cite: 130]
+ * 
  * @param {string} sceneId - El ID del elemento `<section>` a mostrar (e.g., 'scene-1').
  * @returns {void}
  */
@@ -90,17 +90,19 @@ function renderPlayerCard(containerId) {
             <p>⚔️ Ataque: <strong>${p.totalAttack}</strong></p>
             <p>🛡️ Defensa: <strong>${p.totalDefense}</strong></p>
             <p>❤️ Vida Máx: <strong>${p.totalHp}</strong></p>
+            <p>💰 Dinero: <strong >${p.dinero}</strong></p>
             <p>✨ Puntos: <strong>${p.points}</strong></p>
         </div>
     `;
 }
+
 
 /* ==========================================================================
    5. MERCADO
    ========================================================================== */
 /**
  * Inicializa la escena del mercado aplicando descuentos aleatorios a los productos.
- * [cite: 149]
+ * 
  * @returns {void}
  */
 function initMarket() {
@@ -127,7 +129,7 @@ function renderMarketGrid() {
         const precioFormateado = prod.getFormattedPrice();
 
         card.innerHTML = `
-            <img src="${prod.image}" alt="${prod.name}" onerror="this.src='https://placehold.co/100?text=Item'">
+            <img src="${prod.image}" alt="${prod.name}">
             <h4>${prod.name}</h4>
             <p>${prod.type} | ${prod.rarity}</p>
             <p>Bonus: +${prod.bonus}</p>
@@ -140,13 +142,24 @@ function renderMarketGrid() {
             if (state.cart.includes(prod)) {
                 state.cart = state.cart.filter(item => item !== prod);
             } else {
+
                 if (state.cart.length < 5) {
                     state.cart.push(prod);
-                    /** @fires showAddedAnimation */
                     showAddedAnimation(card);
+                    let currentTotal = state.cart.reduce((sum, item) => sum + item.price, 0) / 100;
+                    let dineroTotal = state.player.dinero - currentTotal;
+                    console.log(dineroTotal)
+                    if(dineroTotal<0){
+                        state.cart.pop(prod)
+                        alert("¡No puedes hacer eso!");
+                    }
                 } else {
-                    alert("¡Cesta llena!");
+                    alert("¡No puedes hacer eso!");
+
+
+
                 }
+
             }
             renderMarketGrid();
             renderCartSummary();
@@ -166,37 +179,61 @@ function showAddedAnimation(cardElement) {
     icon.textContent = "🛒+1";
     icon.className = 'cart-feedback';
     cardElement.appendChild(icon);
-    
+
     // Se elimina automáticamente al acabar la animación CSS
-    setTimeout(() => icon.remove(), 1000); 
+    setTimeout(() => icon.remove(), 1000);
 }
 
 /**
  * Renderiza los slots visuales de la cesta o inventario inferior.
- * [cite: 150]
+ *
  * @returns {void}
  */
 function renderCartSummary() {
     const container = document.getElementById('cart-items');
     container.innerHTML = '';
+    let currentTotal = state.cart.reduce((sum, item) => sum + item.price, 0) / 100;
     for (let i = 0; i < 5; i++) {
         const box = document.createElement('div');
         box.className = 'cart-item-box';
         if (state.cart[i]) {
             const img = document.createElement('img');
             img.src = state.cart[i].image;
-            img.onerror = function () { this.src = 'https://placehold.co/100?text=Item' };
             box.appendChild(img);
         }
         container.appendChild(box);
     }
+    let dineroTotal = state.player.dinero - currentTotal;
+    const totalDiv = document.createElement('div');
+    totalDiv.style.gridColumn = "1 / -1";
+    totalDiv.style.textAlign = "center";
+    totalDiv.style.marginTop = "10px";
+    if (dineroTotal >= 0) {
+        totalDiv.innerHTML = ` <p>Dinero Actual: <strong>${dineroTotal}€</strong></p> `;
+    } else {
+        totalDiv.innerHTML = ` <p>Dinero Actual: <strong>Te has pasado de dinero, debes quitar algo.</strong></p> `;
+    }
+
+    container.appendChild(totalDiv);
 }
 
 document.getElementById('btn-buy').addEventListener('click', () => {
-    state.cart.forEach(item => state.player.addItem(item));
-    renderPlayerCard('player-profile-updated');
-    showScene('scene-3');
+    const totalCost = state.cart.reduce((sum, item) => sum + item.price, 0) / 100;
+
+    if (state.player.dinero >= totalCost) {
+        state.player.spendMoney(totalCost);
+        state.cart.forEach(item => state.player.addItem(item));
+        state.cart = [];
+        renderPlayerCard('player-profile-updated');
+        showScene('scene-3');
+
+    } else {
+
+        const falta = totalCost - state.player.dinero;
+        alert(`🚫 ¡Fondos insuficientes!\n\nCoste total: ${totalCost}€\nTu dinero: ${state.player.dinero}€\n`);
+    }
 });
+
 
 document.getElementById('btn-to-enemies').addEventListener('click', () => {
     renderEnemiesList();
@@ -208,7 +245,7 @@ document.getElementById('btn-to-enemies').addEventListener('click', () => {
    ========================================================================== */
 /**
  * Renderiza la cuadrícula de enemigos y sus estadísticas para la Escena 4.
- * [cite: 174, 275]
+ * 
  * @returns {void}
  */
 function renderEnemiesList() {
@@ -233,12 +270,12 @@ document.getElementById('btn-start-gauntlet').addEventListener('click', () => {
 });
 
 /* ==========================================================================
-   7. BATALLA (Con Animación de Entrada)
+   7. BATALLA 
    ========================================================================== */
 /**
  * Inicia el combate contra el enemigo actual en la secuencia.
  * Gestiona la animación de entrada, el resultado de la batalla y la navegación al siguiente enemigo.
- * [cite: 190, 255]
+ * 
  * @returns {void}
  */
 function playNextBattle() {
@@ -246,7 +283,7 @@ function playNextBattle() {
         finishGame();
         return;
     }
-    
+
     // Revivir si el personaje se queda sin vida para que siga el juego
     if (state.player.totalHp <= 0) {
         state.player.hp = state.player.baseHp;
@@ -258,11 +295,9 @@ function playNextBattle() {
     document.getElementById('battle-progress').textContent =
         `Combate ${state.currentEnemyIndex + 1} de ${state.enemies.length}`;
 
-    // simulateBattle es una función importada de ./modules/battle.js
     const result = simulateBattle(state.player, enemy);
     const logContainer = document.getElementById('battle-log');
 
-    // REQUISITO: Animación de entrada (Clases CSS: player-enter / enemy-enter) [cite: 255]
     let htmlContent = `
         <div class="battle-vs">
             <div class="card combatant player-enter" style="border:none; background:transparent; box-shadow:none;">
@@ -294,54 +329,58 @@ function playNextBattle() {
         }
     };
 
-    if (result.winner === 'player') {
+    if (result.winner === 'player' && state.currentEnemyIndex < 3) {
         state.player.addPoints(result.pointsEarned);
-        htmlContent += `<div style="color:green; margin-top:10px;"><h3>🏆 ¡VICTORIA! (+${result.pointsEarned} pts)</h3></div>`;
+        state.player.addMoney(5)
+        htmlContent += `<div style="color:green; margin-top:10px;"><h3>🏆 ¡VICTORIA! (+${result.pointsEarned} pts) (Dinero Total:${state.player.dinero} €)</h3></div>`;
+    } else if (result.winner === 'player' && state.currentEnemyIndex > 3) {
+        state.player.addPoints(result.pointsEarned);
+        state.player.addMoney(5)
+        htmlContent += `<div style="color:green; margin-top:10px;"><h3>🏆 ¡VICTORIA! (+${result.pointsEarned} pts)  (Dinero Total:${state.player.dinero} €)</h3></div>`;
     } else {
         htmlContent += `<div style="color:red; margin-top:10px;"><h3>💀 DERROTA</h3><p>¡Pero sigues adelante!</p></div>`;
     }
-
+    localStorage.setItem("pointsR", state.player.points);
+    localStorage.setItem("monedasR", state.player.dinero);
+    localStorage.setItem("nombreR", state.player.name);
     btnAction.textContent = isLastEnemy ? "Ver Resultados Finales" : "Siguiente Batalla ➡️";
     btnAction.onclick = handleNext;
     logContainer.innerHTML = htmlContent;
 }
 
 /* ==========================================================================
-   8. RESULTADO FINAL (Escena 6 con Confetti)
+   8. RESULTADO FINAL 
    ========================================================================== */
 /**
  * Muestra la escena final, determina el rango del jugador y activa la animación de confetti.
- * [cite: 203, 256]
+ * 
  * @returns {void}
  */
 function finishGame() {
     showScene('scene-6');
     const scoreDiv = document.getElementById('final-score');
-    
-    /** @fires triggerConfetti */
     triggerConfetti();
 
-    // categorizePlayer es una función importada de ./modules/ranking.js
-    const rango = categorizePlayer(state.player, 500); // 500 es el umbral
-    const cssClass = rango === "Netherite" ? "veteran" : "rookie";
+    const rango = categorizePlayer(state.player, 500);
+    const cssClass = rango === "Netherite" ? "netherite" : "madera";
 
-    // Modificación: Muestra imagen del jugador, rango y puntos centrados.
     scoreDiv.innerHTML = `
         <div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
             <div style="margin-bottom: 20px;">
                 <img src="${state.player.avatar}" alt="${state.player.name}" 
-                     style="width: 180px; height: 180px; object-fit: cover; border-radius: 50%; border: 5px solid #5d4037; box-shadow: 0 8px 16px rgba(0,0,0,0.2);">
+                    style="width: 180px; height: 180px; object-fit: cover; border-radius: 50%; border: 5px solid #5d4037; box-shadow: 0 8px 16px rgba(0,0,0,0.2);">
             </div>
             
             <h1 class="rank-title ${cssClass}" style="margin: 10px 0;">${rango.toUpperCase()}</h1>
             <h2 style="margin: 0;">Puntos Totales: ${state.player.points}</h2>
+            <h2 style="margin: 0;">Dinero Total: ${state.player.dinero}</h2>
         </div>
     `;
 }
 
 /**
  * Activa la animación de confetti en la pantalla final utilizando la librería canvas-confetti.
- * [cite: 257]
+ * 
  * @returns {void}
  */
 function triggerConfetti() {
@@ -367,11 +406,12 @@ function triggerConfetti() {
         }
     }());
 }
-
-document.getElementById('btn-restart').addEventListener('click', () => {
-    // Mecanismo para volver a empezar desde cero [cite: 210, 279]
-    location.reload(); 
+document.getElementById('btn-rank').addEventListener('click', () => {
+    console.log(`Los puntos de ${localStorage.getItem("nombreR")} son: ` + localStorage.getItem("pointsR"));
+    console.log(`El dinero de ${localStorage.getItem("nombreR")} es: ` + localStorage.getItem("monedasR"));
+    console.log("El nombre del valiente es: " + localStorage.getItem("nombreR"));
 });
-
-/** @fires initGame */
+document.getElementById('btn-restart').addEventListener('click', () => {
+    location.reload();
+});
 initGame();
